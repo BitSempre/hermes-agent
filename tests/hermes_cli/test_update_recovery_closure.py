@@ -29,9 +29,11 @@ SOURCE = Path(__file__).resolve().parents[2]
 BOOT = ("hermes_bootstrap.py", "hermes_constants.py", "hermes_cli/__init__.py", "hermes_cli/_launchers.py",
         "hermes_agent/__init__.py", "hermes_agent/compat/__init__.py", "hermes_agent/compat/finder.py",
         "hermes_agent/compat/moves.py",
-        "hermes_cli/_early_recovery.py", "hermes_cli/_parser.py", "hermes_cli/runtime_state.py",
-        "hermes_cli/venv_sync.py", "hermes_cli/steward.py", "hermes_cli/stderr_timestamp.py",
-        "hermes_cli/update_lock.py", "hermes_cli/update_custody.py", "pm/environments.py",
+        "hermes_agent/hermes_cli/__init__.py", "hermes_agent/hermes_cli/_launchers.py",
+        "hermes_agent/hermes_cli/_early_recovery.py", "hermes_agent/hermes_cli/_parser.py",
+        "hermes_agent/hermes_cli/runtime_state.py", "hermes_agent/hermes_cli/venv_sync.py",
+        "hermes_agent/hermes_cli/steward.py", "hermes_agent/hermes_cli/stderr_timestamp.py",
+        "hermes_agent/hermes_cli/update_lock.py", "hermes_agent/hermes_cli/update_custody.py", "pm/environments.py",
         "pm/filesystem.py", "pm/paths.py")
 _HOLDER = ("import sys, time\nfrom pathlib import Path\nsys.path.insert(0, sys.argv[1])\n"
            "from hermes_agent.hermes_cli.update_lock import UpdateLock\n"
@@ -49,7 +51,7 @@ def _killed_mid_write(tmp_path: Path, rel: str, committed: dict[str, str] | None
             shutil.copy2(SOURCE / f, root / f)
     for f, text in (committed or {}).items():
         (root / f).write_text(text, encoding="utf-8")
-    (root / "hermes_cli/main.py").write_text("def main():\n    print('APP_REACHED')\n    return 0\n", encoding="utf-8")
+    (root / "hermes_agent/hermes_cli/main.py").write_text("def main():\n    print('APP_REACHED')\n    return 0\n", encoding="utf-8")
     env = {"HOME": str(home), "HERMES_HOME": str(home / ".hermes"), "PATH": os.environ.get("PATH", ""),
            "LANG": "C.UTF-8", "GIT_CONFIG_NOSYSTEM": "1", "GIT_CONFIG_GLOBAL": os.devnull}
     git_exe = shutil.which("git") or "git"
@@ -109,9 +111,9 @@ def _killed_mid_write(tmp_path: Path, rel: str, committed: dict[str, str] | None
 @pytest.mark.platforms("posix")
 @pytest.mark.parametrize(("rel", "torn", "published"), [
     ("hermes_bootstrap.py", False, True),
-    ("hermes_cli/_early_recovery.py", True, True),
-    ("hermes_cli/__init__.py", True, True),
-    ("hermes_cli/update_lock.py", True, True),
+    ("hermes_agent/hermes_cli/_early_recovery.py", True, True),
+    ("hermes_agent/hermes_cli/__init__.py", True, True),
+    ("hermes_agent/hermes_cli/update_lock.py", True, True),
     # An updater that predates publication: the launcher reads the same files from git's objects.
     ("hermes_bootstrap.py", True, False),
 ])
@@ -172,7 +174,7 @@ def test_a_damaged_published_closure_is_rebuilt_from_git_objects_not_trusted(tmp
     launch rebuilds the closure from ``pre``'s objects before repairing (M1)."""
     root, env, original, launcher = _killed_mid_write(tmp_path, "hermes_bootstrap.py")
     (closure,) = (root / ".git/hermes-update-recovery").iterdir()
-    module = closure / "hermes_cli/_early_recovery.py"
+    module = closure / "hermes_agent/hermes_cli/_early_recovery.py"
     module.write_bytes(b"" if damage == "truncated" else
                        module.read_bytes() + b"\nprint('NOT_PRE_CODE_RAN', file=__import__('sys').stderr)\n")
     launch = subprocess.run([str(launcher)], cwd=tmp_path, env=env, capture_output=True, text=True, encoding="utf-8",
@@ -193,7 +195,7 @@ def test_git_object_bytes_that_do_not_hash_to_pres_blob_never_run(tmp_path, corr
     (closure,) = (root / ".git/hermes-update-recovery").iterdir()  # named for ``pre``
     shutil.rmtree(closure.parent)
     if corrupt:
-        oid = subprocess.check_output(["git", "-C", str(root), "rev-parse", f"{closure.name}:hermes_cli/_early_recovery.py"],
+        oid = subprocess.check_output(["git", "-C", str(root), "rev-parse", f"{closure.name}:hermes_agent/hermes_cli/_early_recovery.py"],
                                       env=env, text=True).strip()
         obj = root / ".git/objects" / oid[:2] / oid[2:]
         foreign = f"open({str(ran)!r}, 'w').close()\n".encode()

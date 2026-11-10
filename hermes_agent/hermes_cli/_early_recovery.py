@@ -82,7 +82,7 @@ def _should_skip_external_secret_sources() -> bool:
 
 
 def _project_root() -> Path:
-    return Path(__file__).resolve().parent.parent
+    return Path(__file__).resolve().parents[2]
 
 
 def _read_marker_attempts(marker_path: Path) -> int:
@@ -257,14 +257,15 @@ def interrupted_pull_marker(root: Path) -> Path:
 # objects first when no updater published them (``_launchers._CLOSURE_REPAIR``).
 # The modules import only the stdlib and each other; the package initializer is published empty.
 RECOVERY_CLOSURE_DIR = "hermes-update-recovery"
-RECOVERY_CLOSURE = ("hermes_cli/_early_recovery.py", "hermes_cli/update_lock.py", "hermes_cli/update_custody.py")
+RECOVERY_CLOSURE = ("hermes_agent/__init__.py", "hermes_agent/hermes_cli/_early_recovery.py",
+                    "hermes_agent/hermes_cli/update_lock.py", "hermes_agent/hermes_cli/update_custody.py")
 
 
 # ``<blob id> <path>`` per published file (``RECOVERY_CLOSURE`` + the empty package initializer):
 # a closure is used only when every file hashes to its id (a power loss can leave the renamed dir
 # with files git's objects never had), else it is rebuilt from git's objects.
 RECOVERY_CLOSURE_MANIFEST = "MANIFEST"
-RECOVERY_CLOSURE_INIT = "hermes_cli/__init__.py"
+RECOVERY_CLOSURE_INIT = "hermes_agent/hermes_cli/__init__.py"
 
 
 def recovery_closure_dir(root: Path, pre: str) -> Path:
@@ -1355,7 +1356,7 @@ def _pytest_owns_live_checkout(root: Path) -> bool:
 
     Copied installations in tmp_path remain eligible for real recovery tests.
     """
-    return "PYTEST_CURRENT_TEST" in os.environ and root == Path(__file__).resolve().parent.parent
+    return "PYTEST_CURRENT_TEST" in os.environ and root == Path(__file__).resolve().parents[2]
 
 
 def _missing_environment(root: Path) -> bool:

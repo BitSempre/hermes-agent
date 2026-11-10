@@ -90,13 +90,13 @@ POST_MOVE_MODULES = (
     "hermes_agent.gateway.session_context",
     "hermes_agent.gateway.shutdown_forensics",
     "hermes_agent.gateway.status",
-    "hermes_cli.gateway",
-    "hermes_cli.gateway_windows",
-    "hermes_cli.github_api",
-    "hermes_cli.plugins_session_env",
-    "hermes_cli.source_check",
-    "hermes_cli.update_cmd_fleet_unit_budget",
-    "hermes_cli.update_serve_obligations",
+    "hermes_agent.hermes_cli.gateway",
+    "hermes_agent.hermes_cli.gateway_windows",
+    "hermes_agent.hermes_cli.github_api",
+    "hermes_agent.hermes_cli.plugins_session_env",
+    "hermes_agent.hermes_cli.source_check",
+    "hermes_agent.hermes_cli.update_cmd_fleet_unit_budget",
+    "hermes_agent.hermes_cli.update_serve_obligations",
     "pm.lock",
     "hermes_agent.tools.environments.local",
 )
@@ -315,7 +315,7 @@ def publish_recovery_closure(git_cmd, root: Path, pre: str) -> Path:
                 handle.write(data)
                 handle.flush()
                 os.fsync(handle.fileno())
-        for directory in (staging / "hermes_cli", staging):
+        for directory in (staging / "hermes_agent" / "hermes_cli", staging / "hermes_agent", staging):
             _fsync_dir(directory)
         shutil.rmtree(dest, ignore_errors=True)
         os.replace(staging, dest)

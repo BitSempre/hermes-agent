@@ -19,7 +19,7 @@ import sys
 from pathlib import Path
 
 if __name__ == "__main__":
-    sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+    sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
 
 from pm.environments import owning_home_root, store_root
 
@@ -417,7 +417,7 @@ def _hermes_closure_repair():
             shutil.rmtree(staging, ignore_errors=True)
         if not verified():
             return
-    for name in [n for n in sys.modules if n.split('.')[0] in ('hermes_cli', 'hermes_bootstrap', 'hermes_constants', 'pm')]:
+    for name in [n for n in sys.modules if n.split('.')[0] in ('hermes_agent', 'hermes_cli', 'hermes_bootstrap', 'hermes_constants', 'pm')]:
         del sys.modules[name]
     tree = os.path.normcase(os.path.realpath(root))
     sys.path[:] = [str(closure)] + [p for p in sys.path if p and os.path.normcase(os.path.realpath(p)) != tree
@@ -427,7 +427,7 @@ def _hermes_closure_repair():
     restored = False
     try:
         with contextlib.redirect_stderr(said):
-            from hermes_cli import _early_recovery
+            from hermes_agent.hermes_cli import _early_recovery
             restored = _early_recovery.restore_interrupted_pull(root)
     except Exception as exc:
         said.write('hermes: the checkout cannot start after an interrupted `hermes update`, and it was not '
@@ -1161,13 +1161,13 @@ if __name__ == "__main__":
     import argparse
 
     if sys.argv[1:2] == ["--print-runtime-command"]:
-        print_runtime_command(Path(__file__).resolve().parents[1], sys.argv[2:])
+        print_runtime_command(Path(__file__).resolve().parents[2], sys.argv[2:])
         raise SystemExit(0)
 
     parser = argparse.ArgumentParser(description="Publish source-install launchers.")
     parser.add_argument("out_dir", type=Path)
     args = parser.parse_args()
-    repo_root = Path(__file__).resolve().parents[1]
+    repo_root = Path(__file__).resolve().parents[2]
     if resolve_store_python(repo_root, publication=True) is None:
         parser.exit(1, "hermes: store interpreter is missing; finish pm install before publishing launchers\n")
     args.out_dir.mkdir(parents=True, exist_ok=True)
