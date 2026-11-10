@@ -951,6 +951,12 @@ def _run_discovery_steps() -> None:
         import pkgutil
 
         import hermes_agent.providers as _pkg
+        from hermes_cli._startup_fast import project_root_str
+
+        # The folder's old place at the checkout root: a provider file dropped there still loads.
+        _old_folder = os.path.join(project_root_str(), "providers")
+        if os.path.isdir(_old_folder) and _old_folder not in _pkg.__path__:
+            _pkg.__path__.append(_old_folder)
 
         for _importer, modname, _ispkg in pkgutil.iter_modules(_pkg.__path__):
             if modname.startswith("_") or modname == "base":

@@ -80,8 +80,8 @@ def test_user_plugin_overrides_bundled(tmp_path, monkeypatch):
     user_gmi = hermes_home / "plugins" / "model-providers" / "gmi"
     user_gmi.mkdir(parents=True)
     (user_gmi / "__init__.py").write_text(
-        "from providers import register_provider\n"
-        "from providers.base import ProviderProfile\n"
+        "from hermes_agent.providers import register_provider\n"
+        "from hermes_agent.providers.base import ProviderProfile\n"
         "\n"
         "custom_gmi = ProviderProfile(\n"
         '    name="gmi",\n'
