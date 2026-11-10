@@ -128,7 +128,8 @@ def discover_builtin_tools(tools_dir: Optional[Path] = None) -> list[str]:
         # Toolset filtering happens AFTER import. Keep the troubleshooting worker's
         # import graph closed over reviewed core tools, not plugin-backed wrappers
         # or a profile-writable discovery cache. Core approval/redaction stay intact.
-        module_names = ["tools.file_tools", "tools.terminal_tool", "tools.process_registry"]
+        module_names = ["hermes_agent.tools.file_tools", "hermes_agent.tools.terminal_tool",
+                        "hermes_agent.tools.process_registry"]
         for module_name in module_names:
             importlib.import_module(module_name)
         return module_names
@@ -160,7 +161,7 @@ def discover_builtin_tools(tools_dir: Optional[Path] = None) -> list[str]:
             cache_dirty = True
         fresh_cache[abs_path] = [stat_key[0], stat_key[1], registers]
         if registers:
-            module_names.append(".".join(("tools", *rel_parts)))
+            module_names.append(".".join(("hermes_agent", "tools", *rel_parts)))
 
     # Drop entries for files that no longer exist; rewrite only when changed.
     if cache_dirty or set(fresh_cache) != set(cache):
