@@ -335,7 +335,7 @@ def profile_for_host(url: str, *, metadata: bool = False) -> ProviderProfile | N
     (home, host) until the registry changes, because wire paths ask on every request.
     """
     from hermes_agent.agent.safe_worker_policy import safe_worker_enabled
-    from utils import base_url_hostname
+    from hermes_agent.utils import base_url_hostname
 
     host = base_url_hostname(url) if url else ""
     if not host or safe_worker_enabled():
@@ -434,7 +434,7 @@ def refresh_bound_home() -> None:
 
 def _bound_home_layer() -> tuple[_HomeLayer, Path | None, str]:
     try:
-        from hermes_constants import get_hermes_home, hermes_home_key
+        from hermes_agent.hermes_constants import get_hermes_home, hermes_home_key
 
         home = Path(get_hermes_home())
         key = hermes_home_key(home)
@@ -514,7 +514,7 @@ def _plugin_dir_stamps_settled(stamps: tuple) -> bool:
 def _user_plugins_dir() -> Path | None:
     """Return ``$HERMES_HOME/plugins/model-providers/`` if it exists."""
     try:
-        from hermes_constants import get_hermes_home
+        from hermes_agent.hermes_constants import get_hermes_home
 
         d = get_hermes_home() / "plugins" / "model-providers"
         return d if d.is_dir() else None
@@ -530,7 +530,7 @@ def _installed_plugins_dir() -> Path | None:
     :func:`_discover_installed_provider_plugins`.
     """
     try:
-        from hermes_constants import get_hermes_home
+        from hermes_agent.hermes_constants import get_hermes_home
 
         d = get_hermes_home() / "plugins"
         return d if d.is_dir() else None
@@ -549,8 +549,8 @@ def _manifest_field(plugin_dir: Path, key: str) -> str | None:
             text = manifest.read_text(encoding="utf-8", errors="replace")
         except OSError:
             return None
-        from hermes_yaml import YAMLError
-        from utils import fast_safe_load
+        from hermes_agent.hermes_yaml import YAMLError
+        from hermes_agent.utils import fast_safe_load
         try:
             data = fast_safe_load(text)
         except YAMLError:
