@@ -147,7 +147,7 @@ def build_bundle_invocation_message(
     info = get_skill_bundles().get(cmd_key)
     if not info:
         return None
-    # Late import keeps skill_bundles cheap to import (no tools/* at import time).
+    # Late import keeps skill_bundles cheap to import (no hermes_agent/tools/* at import time).
     from agent.skill_commands import _disabled_skill_names, _load_skill_blocks, _load_skill_payload, _scaffold_header
     bundle_name = info["name"]
     loaded_names, missing, disabled, skill_blocks = _load_skill_blocks(
