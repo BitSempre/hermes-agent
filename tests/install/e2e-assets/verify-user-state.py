@@ -28,7 +28,7 @@ Two things are deliberately NOT failed on:
   is advisory-only. The exception is ``skills/.archive/**``, which holds
   restorable *user* skills and therefore is judged like everything else.
 
-Ownership: the ``plugins/**`` trees belong to verify-plugin-preservation.py —
+Ownership: the ``hermes_agent/plugins/**`` trees belong to verify-plugin-preservation.py —
 that contract (nothing deleted or modified, additions tolerated) is already
 enforced separately, so this tool does not double-own them.
 
@@ -140,7 +140,7 @@ def _db_counts(path: str) -> dict | None:
 
 
 def _owns_plugins(rel: str, *, profiles: bool) -> bool:
-    """plugins/** belongs to verify-plugin-preservation.py, at both roots."""
+    """hermes_agent/plugins/** belongs to verify-plugin-preservation.py, at both roots."""
     parts = rel.split("/")
     if not profiles:
         return parts[0] == PLUGIN_ROOT

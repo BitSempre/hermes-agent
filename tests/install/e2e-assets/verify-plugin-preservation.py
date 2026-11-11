@@ -5,7 +5,7 @@ Standalone and stdlib-only. Snapshot/verify are read-only against the home;
 the explicit seed command creates controlled fixtures in a disposable home.
 
   snapshot  walk every plugin tree of a HERMES_HOME (the active home's
-            ``plugins/**`` plus each ``profiles/<name>/plugins/**`` tree,
+            ``hermes_agent/plugins/**`` plus each ``profiles/<name>/plugins/**`` tree,
             overridable with --profiles-dir) and record, per entry —
             including EMPTY DIRECTORIES and the tree roots themselves —
             kind (file/dir/symlink/junction), byte size + sha256 for

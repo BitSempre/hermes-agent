@@ -8,7 +8,7 @@ source-reading, no filesystem mocks.
 The contract under test: an upgrade may ADD state and may rewrite config.yaml
 (config migration) and the bundled skills tree (skills sync), but it may not
 delete or modify the user's own durable state, and it may not shrink state.db.
-plugins/** is deliberately not owned here — verify-plugin-preservation.py owns
+hermes_agent/plugins/** is deliberately not owned here — verify-plugin-preservation.py owns
 it — so this tool must not fail on it.
 """
 

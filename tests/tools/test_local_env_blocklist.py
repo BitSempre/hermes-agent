@@ -282,7 +282,7 @@ def test_unreadable_platform_manifest_fails_closed(tmp_path):
     finally:
         manifest.chmod(0o644)
     # Not provably a platform's, so no reason to fail: an unsearchable plugin dir (a root-owned
-    # plugin in a volume) or an unreadable flat plugins/* manifest.
+    # plugin in a volume) or an unreadable flat hermes_agent/plugins/* manifest.
     locked = [tmp_path / "plugins" / "lockedx", tmp_path / "plugins" / "memx"]
     for d in locked:
         d.mkdir()

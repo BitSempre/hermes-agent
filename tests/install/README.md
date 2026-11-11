@@ -189,7 +189,7 @@ Running the drivers locally: don't, except in a disposable VM. The windows drive
 ## Plugin upgrade preservation
 
 Every upgrade leg also carries a plugin-survival contract: a tagged upgrade
-must not delete or modify anything under the active home's `plugins/**` tree
+must not delete or modify anything under the active home's `hermes_agent/plugins/**` tree
 or any profile's `profiles/<name>/plugins/**` tree. Destructive flows
 (explicit uninstall, plugin removal, profile or user deletion) are out of
 contract and not exercised.
